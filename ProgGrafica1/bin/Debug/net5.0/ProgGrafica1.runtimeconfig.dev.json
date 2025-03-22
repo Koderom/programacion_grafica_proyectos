@@ -2,7 +2,8 @@
   "runtimeOptions": {
     "additionalProbingPaths": [
       "C:\\Users\\ICOREBIZ\\.dotnet\\store\\|arch|\\|tfm|",
-      "C:\\Users\\ICOREBIZ\\.nuget\\packages"
+      "C:\\Users\\ICOREBIZ\\.nuget\\packages",
+      "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
     ]
   }
 }

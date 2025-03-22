@@ -109,7 +109,7 @@ namespace ProgGrafica1
                     break;
             }
 
-            Matrix4 scale = Matrix4.CreateScale(0.5f, 0.5f, 0.5f);
+            Matrix4 scale = Matrix4.CreateScale(1.5f, 1.5f, 1.5f);
             Matrix4 trans = rotation * scale;
 
             GL.UseProgram(Handle);
