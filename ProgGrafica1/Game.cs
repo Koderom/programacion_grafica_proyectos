@@ -13,8 +13,7 @@ namespace ProgGrafica1
 {
     public class Game : GameWindow
     {
-
-        ULetterObject ULetterObject;
+        List<ULetterObject> uLetterObjectsList = new List<ULetterObject>();
 
         float[] rotacion = { 0.0f, 0.0f, 0.0f };
         double acumUpdateFrame = 0;
@@ -30,7 +29,10 @@ namespace ProgGrafica1
             base.OnLoad();
             GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
-            ULetterObject = new ULetterObject(0.2f, 0.2f, 0.0f);
+            uLetterObjectsList = new List<ULetterObject>{
+                new ULetterObject(0.4f, 0.0f, 0.0f),
+                new ULetterObject(-0.4f, 0.0f, 0.0f)
+            };
 
             shader = new Shader("./shader.vert", "./shader.frag");
             shader.Use();
@@ -41,7 +43,9 @@ namespace ProgGrafica1
             base.OnRenderFrame(args);
             GL.Clear(ClearBufferMask.ColorBufferBit);
 
-            ULetterObject.draw();
+            foreach(ULetterObject item in uLetterObjectsList ) {
+                item.draw();
+            }
 
             SwapBuffers();
         }
@@ -53,41 +57,41 @@ namespace ProgGrafica1
             if (KeyboardState.IsKeyDown(Keys.Escape)) {
                 Close();
             }
-            if (acumUpdateFrame >= 0.005) {
+            //if (acumUpdateFrame >= 0.005) {
                
-                if (KeyboardState.IsKeyDown(Keys.Right))
-                {
-                    float rotarX = rotacion[0] + 1;
-                    if (rotarX > 360) rotarX = 0.0f;
-                    rotacion[0] = rotarX;
-                    shader.rotar(rotarX, 2);
-                }
+            //    if (KeyboardState.IsKeyDown(Keys.Right))
+            //    {
+            //        float rotarX = rotacion[0] + 1;
+            //        if (rotarX > 360) rotarX = 0.0f;
+            //        rotacion[0] = rotarX;
+            //        shader.rotar(rotarX, 2);
+            //    }
 
-                if (KeyboardState.IsKeyDown(Keys.Left))
-                {
-                    float rotarX = rotacion[0] - 1;
-                    if (rotarX < 0) rotarX = 360.0f;
-                    rotacion[0] = rotarX;
-                    shader.rotar(rotarX, 2);
-                }
+            //    if (KeyboardState.IsKeyDown(Keys.Left))
+            //    {
+            //        float rotarX = rotacion[0] - 1;
+            //        if (rotarX < 0) rotarX = 360.0f;
+            //        rotacion[0] = rotarX;
+            //        shader.rotar(rotarX, 2);
+            //    }
 
-                if (KeyboardState.IsKeyDown(Keys.Up))
-                {
-                    float rotarY = rotacion[1] + 1;
-                    if (rotarY > 360) rotarY = 0.0f;
-                    rotacion[1] = rotarY;
-                    shader.rotar(rotarY, 1);
-                }
+            //    if (KeyboardState.IsKeyDown(Keys.Up))
+            //    {
+            //        float rotarY = rotacion[1] + 1;
+            //        if (rotarY > 360) rotarY = 0.0f;
+            //        rotacion[1] = rotarY;
+            //        shader.rotar(rotarY, 1);
+            //    }
 
-                if (KeyboardState.IsKeyDown(Keys.Down))
-                {
-                    float rotarY = rotacion[1] - 1;
-                    if (rotarY < 0) rotarY = 360.0f;
-                    rotacion[1] = rotarY;
-                    shader.rotar(rotarY, 1);
-                }
-                acumUpdateFrame = 0;
-            }
+            //    if (KeyboardState.IsKeyDown(Keys.Down))
+            //    {
+            //        float rotarY = rotacion[1] - 1;
+            //        if (rotarY < 0) rotarY = 360.0f;
+            //        rotacion[1] = rotarY;
+            //        shader.rotar(rotarY, 1);
+            //    }
+            //    acumUpdateFrame = 0;
+            //}
             
         }
         

@@ -1,0 +1,61 @@
+# .NET Core & .NET Framework
+
+# Build files
+bin/
+obj/
+out/
+
+# User-specific files
+*.user
+*.vs
+*.suo
+*.userosscache
+*.sln.docstates
+*.sdf
+*.cache
+*.ncb
+*.dbmdl
+*.opendb
+*.VC.db
+
+# Logs
+*.log
+
+# Visual Studio Code
+.vscode/
+.vscode/*
+
+# Rider
+.idea/
+.idea/*
+
+# NuGet packages
+*.nupkg
+packages/
+
+# dotnet tools
+.dotnet-tools/
+
+# Resharper
+_ReSharper*/
+*.DotSettings.user
+
+# Entity Framework migrations
+Migrations/
+
+# ASP.NET specific
+wwwroot/node_modules/
+wwwroot/lib/
+
+# Database
+*.mdf
+*.ldf
+*.sqlite
+
+# Coverage & Test results
+TestResults/
+coverage/
+
+# Others
+.DS_Store
+Thumbs.db

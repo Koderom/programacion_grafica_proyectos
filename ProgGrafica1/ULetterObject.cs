@@ -29,15 +29,15 @@ namespace ProgGrafica1
             VAO = GL.GenVertexArray();
             GL.BindVertexArray(VAO);
 
-            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
-            GL.EnableVertexAttribArray(0);
-
             EBO = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, EBO);
             GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsageHint.StreamDraw);
+            
+            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
+            GL.EnableVertexAttribArray(0);
         }
 
-        public void updateValues(float pos_x, float pos_y, float pos_z, float size) {
+        public void updateValues(float pos_x, float pos_y, float pos_z) {
             this.pos_x = pos_x;
             this.pos_y = pos_y;
             this.pos_z = pos_z;
@@ -60,7 +60,7 @@ namespace ProgGrafica1
         }
 
         public float[] generarVertices() {
-            float[] vertices = defaultVertices;
+            float[] vertices = defaultVertices.ToArray();
 
             for (int i = 0; i < vertices.Length; i++) {
 
