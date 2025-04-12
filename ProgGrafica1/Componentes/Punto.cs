@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ProgGrafica1.Elements
 {
-    public class Punto
+    public class Punto : ICloneable
     {
         public float x { get; set; }
         public float y { get; set; }
@@ -29,6 +29,11 @@ namespace ProgGrafica1.Elements
                 y: a.y + b.y,
                 z: a.z + b.z
             );
+        }
+
+        public object Clone()
+        {
+            return new Punto { x = this.x, y = this.y, z = this.z };
         }
     }
 }

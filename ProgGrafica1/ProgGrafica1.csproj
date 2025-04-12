@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Componentes\ULetterObject.cs" />
+    <Compile Remove="componentes\ULetterObject.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -28,7 +28,8 @@ namespace ProgGrafica1
             base.OnLoad();
             GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
-            cargarEscenario("./assets/escenario.json");
+            loadEscenario("./assets/escenario.json");
+            //saveEscenario("./assets/escenario.json");
 
             shader = new Shader("./shader.vert", "./shader.frag");
 
@@ -73,11 +74,21 @@ namespace ProgGrafica1
             shader.Dispose();
         }
 
-        private void cargarEscenario(String path){
+        private void saveEscenario(String path) {
+            string projectDir = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName;
+            string filePath = Path.Combine(projectDir, path);
+
+            string jsonEscenario = JsonSerializer.Serialize(this.escenario);
+            File.WriteAllText (filePath, jsonEscenario);
+        }
+
+        private void loadEscenario(String path){
             try
             {
-                string basePath = AppDomain.CurrentDomain.BaseDirectory;
-                string jsonString = File.ReadAllText(Path.Combine(basePath, path));
+                string projectDir = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName;
+                string filePath = Path.Combine(projectDir, path);
+
+                string jsonString = File.ReadAllText(filePath);
                 this.escenario = JsonSerializer.Deserialize<Escenario>(jsonString);
             }
             catch (Exception e)
