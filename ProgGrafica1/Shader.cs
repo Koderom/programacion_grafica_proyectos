@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -57,7 +58,7 @@ namespace ProgGrafica1
                 Console.WriteLine(infoLog);
             }
 
-            rotar(0.0f, 1);
+            setDefautlTransform();
 
             GL.DetachShader(Handle, VertexShader);
             GL.DetachShader(Handle, FragmentShader);
@@ -65,8 +66,9 @@ namespace ProgGrafica1
             GL.DeleteShader(VertexShader);
         }
 
-        public void Use() {
+        public int Use() {
             GL.UseProgram(Handle);
+            return Handle;
         }
 
         private bool disposedValue = false;
@@ -88,40 +90,18 @@ namespace ProgGrafica1
             Dispose(true);
             GC.SuppressFinalize(this);
         }
-        public void rotar(float grados, int eje)
+        
+        private void setDefautlTransform()
         {
-            Matrix4 rotation;
-
-            switch (eje)
-            {
-                case 1:
-                    rotation = Matrix4.CreateRotationX(MathHelper.DegreesToRadians(grados));
-                    break;
-                case 2:
-                    rotation = Matrix4.CreateRotationY(MathHelper.DegreesToRadians(grados));
-                    break;
-                case 3:
-                    rotation = Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(grados));
-                    break;
-
-                default:
-                    rotation = Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(grados));
-                    break;
-            }
-
-            Matrix4 scale = Matrix4.CreateScale(0.5f, 0.5f, 0.5f);
-            Matrix4 trans = rotation * scale;
-
             GL.UseProgram(Handle);
-
+            Matrix4 scale = Matrix4.CreateScale(1.0f, 1.0f, 1.0f);
             int location = GL.GetUniformLocation(Handle, "transform");
-            if (location == -1)
+
+            if (location != -1)
             {
-                Console.WriteLine($"Advertencia: Uniform transform '{location}' no encontrada en el shader.");
-            }
-            else {
-                GL.UniformMatrix4(location, true, ref trans);
+                GL.UniformMatrix4(location, true, ref scale);
             }
         }
     }
+
 }

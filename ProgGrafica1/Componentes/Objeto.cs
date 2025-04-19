@@ -9,25 +9,28 @@ namespace ProgGrafica1.Elements
 {
     public class Objeto
     {
-        public List<Elemento> elementos { get; set; }
+        public Dictionary<String, Elemento> elementos { get; set; }
         public Punto position { get; set; }
 
-        public Objeto(Punto position = null, List<Elemento> elementos = null) {
+        public Objeto(Punto position = null, Dictionary<String, Elemento> elementos = null) {
             this.position = position?? new Punto();
-            this.elementos = elementos?? new List<Elemento>();
+            this.elementos = elementos?? new Dictionary<String, Elemento>();
         }
 
-        public void add( Elemento elemento)
+        public void add(String id, Elemento elemento)
         {
-            elementos.Add(elemento);    
+            elementos.Add(id, elemento);    
         }
-
+        public Elemento getElemento(String id)
+        {
+            return elementos[id];
+        }
         public void draw() {
-            foreach (Elemento elemento in elementos) elemento.draw(position);
+            foreach (var elemento in elementos) elemento.Value.draw(position);
         }
 
         public void dispose() {
-            foreach (Elemento elemento in elementos) elemento.dispose();
+            foreach (var elemento in elementos) elemento.Value.dispose();
         }
     }
 }

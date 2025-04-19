@@ -10,27 +10,32 @@ namespace ProgGrafica1.Elements
 {
     public class Escenario
     {
-        public List<Objeto> objetos { get; set; } = new List<Objeto>();
+        public Dictionary<String,Objeto> objetos { get; set; } = new Dictionary<String, Objeto>();
 
-        public Escenario(List<Objeto> objetos = null) 
+        public Escenario(Dictionary<String, Objeto> objetos = null) 
         {
-            this.objetos = objetos?? new List<Objeto>();
+            this.objetos = objetos?? new Dictionary<String, Objeto>();
         }
 
-        public void addObjeto(Objeto objeto)
+        public void addObjeto(String id, Objeto objeto)
         {
-            objetos.Add(objeto);
+            objetos.Add(id, objeto);
         }
 
         public void draw() 
         {
-            foreach( Objeto objeto in objetos) objeto.draw();
+            foreach( var objeto in objetos) objeto.Value.draw();
             
+        }
+
+        public Objeto getObject(String id) 
+        {
+            return objetos[id];
         }
 
         public void dispose()
         {
-            foreach (Objeto objeto in objetos) objeto.dispose();
+            foreach (var objeto in objetos) objeto.Value.dispose();
         }
     }
 }

@@ -1,8 +1,10 @@
 ﻿using ProgGrafica1.Elements;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace ProgGrafica1.utils
@@ -47,5 +49,21 @@ namespace ProgGrafica1.utils
             );
         }
     }
+        public static void saveData<T> (String path, T data)
+        {
+            string projectDir = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName;
+            string filePath = Path.Combine(projectDir, path);
+
+            string jsonEscenario = JsonSerializer.Serialize(data);
+            File.WriteAllText(filePath, jsonEscenario);
+        }
+        public static T loadData<T>(String path)
+        {
+            string projectDir = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName;
+            string filePath = Path.Combine(projectDir, path);
+
+            string jsonString = File.ReadAllText(filePath);
+            return JsonSerializer.Deserialize<T>(jsonString);
+        }
     }
 }

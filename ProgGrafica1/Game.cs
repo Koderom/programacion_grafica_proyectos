@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -11,12 +12,15 @@ using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using ProgGrafica1.Elements;
+using ProgGrafica1.utils;
 
 namespace ProgGrafica1
 {
     public class Game : GameWindow
     {
+        int Program = -1;
         Escenario escenario;
+        Transform mTransform = new Transform();
 
         Shader shader;
         public Game(int width, int height, string title) :
@@ -28,12 +32,12 @@ namespace ProgGrafica1
             base.OnLoad();
             GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
-            loadEscenario("./assets/escenario.json");
-            //saveEscenario("./assets/escenario.json");
+            escenario = ComponentUtils.loadData<Escenario>("./assets/escenario.json");
+            //ComponentUtils.saveData("./assets/escenario.json", this.escenario);
 
             shader = new Shader("./shader.vert", "./shader.frag");
 
-            shader.Use();
+            Program = shader.Use();
         }
 
         protected override void OnRenderFrame(FrameEventArgs args)
@@ -48,8 +52,57 @@ namespace ProgGrafica1
         protected override void OnUpdateFrame(FrameEventArgs args)
         {
             base.OnUpdateFrame(args);
-            if (KeyboardState.IsKeyDown(Keys.Escape)) {
+
+            Matrix4 tranform = Matrix4.Identity;
+            
+
+            if (KeyboardState.IsKeyDown(Keys.Escape))
+            {
                 Close();
+            }
+            if (KeyboardState.IsKeyDown(Keys.M)) {
+                this.mTransform.Scale *= new Vector3(1.0001f);
+            }
+            if (KeyboardState.IsKeyDown(Keys.Comma))
+            {
+                this.mTransform.Scale *= new Vector3(0.9999f);
+            }
+            if (KeyboardState.IsKeyDown(Keys.X))
+            {
+                Matrix4 rotacion = Matrix4.CreateRotationX(
+                    MathHelper.DegreesToRadians(0.1f)
+                );
+                this.mTransform.Rotation = rotacion * this.mTransform.Rotation;
+            }
+            if (KeyboardState.IsKeyDown(Keys.Y))
+            {
+                Matrix4 rotacion = Matrix4.CreateRotationY(
+                    MathHelper.DegreesToRadians(0.1f)
+                );
+                this.mTransform.Rotation = rotacion * this.mTransform.Rotation;
+            }
+            if (KeyboardState.IsKeyDown(Keys.Z))
+            {
+                Matrix4 rotacion = Matrix4.CreateRotationZ(
+                    MathHelper.DegreesToRadians(0.1f)
+                );
+                this.mTransform.Rotation = rotacion * this.mTransform.Rotation;
+            }
+            
+            if (KeyboardState.IsKeyDown(Keys.Up))
+                mTransform.Position.Y += 0.001f;
+            if (KeyboardState.IsKeyDown(Keys.Down))
+                mTransform.Position.Y -= 0.001f;
+            if (KeyboardState.IsKeyDown(Keys.Left))
+                mTransform.Position.X -= 0.001f;
+            if (KeyboardState.IsKeyDown(Keys.Right))
+                mTransform.Position.X += 0.001f;
+
+            tranform = mTransform.GetModelMatrix();
+            int location = GL.GetUniformLocation(Program, "transform");
+            if (location != -1)
+            {
+                GL.UniformMatrix4(location, false, ref tranform);
             }
         }
         
