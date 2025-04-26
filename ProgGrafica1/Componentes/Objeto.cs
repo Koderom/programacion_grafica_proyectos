@@ -1,4 +1,5 @@
 ﻿using OpenTK.Graphics.OpenGL4;
+using ProgGrafica1.utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace ProgGrafica1.Elements
 {
     public class Objeto
     {
+        public Transform transform { get; set; } = new Transform();
         public Dictionary<String, Elemento> elementos { get; set; }
         public Punto position { get; set; }
 
@@ -25,8 +27,10 @@ namespace ProgGrafica1.Elements
         {
             return elementos[id];
         }
-        public void draw() {
-            foreach (var elemento in elementos) elemento.Value.draw(position);
+        public void draw(int program, Transform transform) {
+            Transform rtransform = Transform.combinarTransformacion(transform, this.transform);
+
+            foreach (var elemento in elementos) elemento.Value.draw(program, rtransform, position);
         }
 
         public void dispose() {

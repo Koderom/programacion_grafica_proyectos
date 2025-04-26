@@ -6,6 +6,7 @@ using System.Reflection.Metadata;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using ImGuiNET;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
@@ -20,12 +21,14 @@ namespace ProgGrafica1
     {
         int Program = -1;
         Escenario escenario;
+        ImGuiController _controller;
         Transform mTransform = new Transform();
 
         Shader shader;
         public Game(int width, int height, string title) :
-            base(GameWindowSettings.Default, new NativeWindowSettings() { Size = (width, height), Title = title }) {
-            
+            base(GameWindowSettings.Default, new NativeWindowSettings() { Size = (width, height), Title = title })
+        {
+
         }
         protected override void OnLoad()
         {
@@ -38,74 +41,94 @@ namespace ProgGrafica1
             shader = new Shader("./shader.vert", "./shader.frag");
 
             Program = shader.Use();
+            _controller = new ImGuiController(ClientSize.X, ClientSize.Y);
         }
+
+        protected override void OnResize(ResizeEventArgs e)
+        {
+            base.OnResize(e);
+            GL.Viewport(0, 0, ClientSize.X, ClientSize.Y);
+            _controller.WindowResized(ClientSize.X, ClientSize.Y);
+        }
+
 
         protected override void OnRenderFrame(FrameEventArgs args)
         {
             base.OnRenderFrame(args);
             GL.Clear(ClearBufferMask.ColorBufferBit);
-            
-            escenario.draw();
+            escenario.draw(Program);
+
+
+            _controller.Update(this, (float)args.Time);
+            loadPanel();
+            _controller.Render();
+
 
             SwapBuffers();
         }
         protected override void OnUpdateFrame(FrameEventArgs args)
         {
             base.OnUpdateFrame(args);
+            if (KeyboardState.IsKeyDown(Keys.Escape)) Close();
 
-            Matrix4 tranform = Matrix4.Identity;
-            
+            mTransform = getSelectedTransform();
+            bool isAnyShiftPressed = KeyboardState.IsKeyDown(Keys.RightShift) || KeyboardState.IsKeyDown(Keys.LeftShift);
 
-            if (KeyboardState.IsKeyDown(Keys.Escape))
+            //Escala
+            if (KeyboardState.IsKeyDown(Keys.E))
             {
-                Close();
+                if (isAnyShiftPressed)
+                    this.mTransform.Scale *= new Vector3(0.999f);
+                else
+                    this.mTransform.Scale *= new Vector3(1.001f);
             }
-            if (KeyboardState.IsKeyDown(Keys.M)) {
-                this.mTransform.Scale *= new Vector3(1.0001f);
-            }
-            if (KeyboardState.IsKeyDown(Keys.Comma))
+
+            //Traslacion
+            float speed = 0.01f;
+            if (KeyboardState.IsKeyDown(Keys.Up) && isAnyShiftPressed)
             {
-                this.mTransform.Scale *= new Vector3(0.9999f);
+                mTransform.Position += Vector3.UnitZ * speed;
             }
+            else if (KeyboardState.IsKeyDown(Keys.Down) && isAnyShiftPressed)
+            {
+                mTransform.Position -= Vector3.UnitZ * speed;
+            }
+            else if (KeyboardState.IsKeyDown(Keys.Up))
+            {
+                mTransform.Position += Vector3.UnitY * speed;
+            }
+            else if (KeyboardState.IsKeyDown(Keys.Down))
+            {
+                mTransform.Position -= Vector3.UnitY * speed;
+            }
+            else if (KeyboardState.IsKeyDown(Keys.Right))
+            {
+                mTransform.Position += Vector3.UnitX * speed;
+            }
+            else if (KeyboardState.IsKeyDown(Keys.Left))
+            {
+                mTransform.Position -= Vector3.UnitX * speed;
+            }
+
+            //ROTACION
+            float degreess = MathHelper.DegreesToRadians(0.1f);
             if (KeyboardState.IsKeyDown(Keys.X))
             {
-                Matrix4 rotacion = Matrix4.CreateRotationX(
-                    MathHelper.DegreesToRadians(0.1f)
-                );
+                Matrix4 rotacion = Matrix4.CreateRotationX(degreess);
                 this.mTransform.Rotation = rotacion * this.mTransform.Rotation;
             }
             if (KeyboardState.IsKeyDown(Keys.Y))
             {
-                Matrix4 rotacion = Matrix4.CreateRotationY(
-                    MathHelper.DegreesToRadians(0.1f)
-                );
+                Matrix4 rotacion = Matrix4.CreateRotationY(degreess);
                 this.mTransform.Rotation = rotacion * this.mTransform.Rotation;
             }
             if (KeyboardState.IsKeyDown(Keys.Z))
             {
-                Matrix4 rotacion = Matrix4.CreateRotationZ(
-                    MathHelper.DegreesToRadians(0.1f)
-                );
+                Matrix4 rotacion = Matrix4.CreateRotationZ(degreess);
                 this.mTransform.Rotation = rotacion * this.mTransform.Rotation;
             }
-            
-            if (KeyboardState.IsKeyDown(Keys.Up))
-                mTransform.Position.Y += 0.001f;
-            if (KeyboardState.IsKeyDown(Keys.Down))
-                mTransform.Position.Y -= 0.001f;
-            if (KeyboardState.IsKeyDown(Keys.Left))
-                mTransform.Position.X -= 0.001f;
-            if (KeyboardState.IsKeyDown(Keys.Right))
-                mTransform.Position.X += 0.001f;
-
-            tranform = mTransform.GetModelMatrix();
-            int location = GL.GetUniformLocation(Program, "transform");
-            if (location != -1)
-            {
-                GL.UniformMatrix4(location, false, ref tranform);
-            }
         }
-        
+
 
         protected override void OnFramebufferResize(FramebufferResizeEventArgs e)
         {
@@ -127,27 +150,66 @@ namespace ProgGrafica1
             shader.Dispose();
         }
 
-        private void saveEscenario(String path) {
-            string projectDir = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName;
-            string filePath = Path.Combine(projectDir, path);
 
-            string jsonEscenario = JsonSerializer.Serialize(this.escenario);
-            File.WriteAllText (filePath, jsonEscenario);
+        private void loadPanel()
+        {
+            String root = "escenario";
+            if (ImGui.Begin("Escenario"))
+            {
+                bool escOpen = ImGui.TreeNode(root);
+                drawPanelNodoSeleccionable(root,root);
+
+                if (escOpen) {
+                    foreach (var (objNombre, objeto) in escenario.objetos)
+                    {
+                        bool objOpen = ImGui.TreeNode(objNombre);
+                        drawPanelNodoSeleccionable(objNombre, $"{root}/{objNombre}");
+                        if (objOpen)
+                        {
+                            foreach (var (elNombre, elemento) in objeto.elementos)
+                            {
+                                bool elOpen = ImGui.TreeNode(elNombre);
+                                drawPanelNodoSeleccionable(elNombre, $"{root}/{objNombre}/{elNombre}");
+                                if (elOpen)
+                                {
+                                    foreach (var (caraNombre, cara) in elemento.caras)
+                                    {
+                                        drawPanelNodoSeleccionable(caraNombre, $"{root}/{objNombre}/{elNombre}/{caraNombre}");
+                                    }
+                                    ImGui.TreePop(); // Elemento
+                                }
+                            }
+                            ImGui.TreePop(); // Objeto
+                        }
+                    }
+                    ImGui.TreePop();
+                }
+            }
+            ImGui.End();
+        }
+        private string _selectedPath = "";
+
+        private void drawPanelNodoSeleccionable(string nombre, string path)
+        {
+            bool isSelected = _selectedPath == path;
+            if (ImGui.Selectable($"-> {nombre}", isSelected))
+            {
+                _selectedPath = path;
+                Console.WriteLine($"Seleccionado: {path}");
+            }
         }
 
-        private void loadEscenario(String path){
-            try
+        private Transform getSelectedTransform() {
+            if (_selectedPath.Length == 0) return escenario.transform;
+            String[] path = _selectedPath.Split("/");
+            switch (path.Length - 1)
             {
-                string projectDir = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName;
-                string filePath = Path.Combine(projectDir, path);
-
-                string jsonString = File.ReadAllText(filePath);
-                this.escenario = JsonSerializer.Deserialize<Escenario>(jsonString);
+                case 0: return escenario.transform;
+                case 1: return escenario.getObject(path[1]).transform;
+                case 2: return escenario.getObject(path[1]).getElemento(path[2]).transform;
+                case 3: return escenario.getObject(path[1]).getElemento(path[2]).GetCara(path[3]).transform;
             }
-            catch (Exception e)
-            {
-                escenario = new Escenario();
-            }
+            return escenario.transform;
         }
     }
 }

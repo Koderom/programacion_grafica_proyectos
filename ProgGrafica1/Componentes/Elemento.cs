@@ -10,6 +10,7 @@ namespace ProgGrafica1.Elements
 {
     public class Elemento
     {
+        public Transform transform { get; set; } = new Transform();
         public Dictionary<String, Cara> caras { get; set; }
         public Punto position { get; set; }
 
@@ -27,9 +28,10 @@ namespace ProgGrafica1.Elements
         public Cara GetCara(String id) { 
             return caras[id];
         }
-        public void draw(Punto relativeOrigin)
+        public void draw(int program,Transform transform,Punto relativeOrigin)
         {
-            foreach (var cara in caras) cara.Value.draw( 
+            Transform rtransform = Transform.combinarTransformacion(transform, this.transform);
+            foreach (var cara in caras) cara.Value.draw( program, rtransform,
                 ComponentUtils.sumarPuntos(relativeOrigin, this.position) 
             );
         }

@@ -1,4 +1,5 @@
 ﻿using OpenTK.Graphics.OpenGL4;
+using OpenTK.Mathematics;
 using ProgGrafica1.utils;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ namespace ProgGrafica1.Elements
 {
     public class Cara
     {
+        public Transform transform { get; set; } = new Transform();
         public List<uint> indices { get; set; }
         public List<Punto> vertices { get; set; }
 
@@ -28,6 +30,7 @@ namespace ProgGrafica1.Elements
 
             this.indices = indices??new List<uint>();
             this.vertices = vertices ?? new List<Punto>();
+            this.transform = new Transform();
         }
 
         public void add(uint pointIndexA, uint pointIndexB, uint pointIndexC)
@@ -37,10 +40,11 @@ namespace ProgGrafica1.Elements
             indices.Add(pointIndexC);
         }
 
-        public void draw(Punto origen)
+        public void draw(int program, Transform transform, Punto origen)
         {
+            Transform rtransform = Transform.combinarTransformacion(transform, this.transform);
             GL.BindVertexArray(VAO);
-
+            drawTransform(program, rtransform);
             if (!isBinding)
             {
                 List<Punto> fixedVertices = ComponentUtils.fixToAbsoluteOrigin(origen, vertices);
@@ -65,6 +69,15 @@ namespace ProgGrafica1.Elements
 
             GL.EnableVertexAttribArray(0);
             GL.BindVertexArray(0);
+        }
+        private void drawTransform(int program, Transform transform) {
+            Matrix4 mTranform = transform.GetModelMatrix();
+            
+            int location = GL.GetUniformLocation(program, "transform");
+            if (location != -1)
+            {
+                GL.UniformMatrix4(location, false, ref mTranform);
+            }
         }
         public void dispose() {
             GL.DeleteVertexArray(VAO);
