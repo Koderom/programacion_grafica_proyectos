@@ -27,10 +27,11 @@ namespace ProgGrafica1.Elements
         {
             return elementos[id];
         }
-        public void draw(int program, Transform transform) {
+        public void draw(int program, Transform transform, Punto relativeOrigin) {
             Transform rtransform = Transform.combinarTransformacion(transform, this.transform);
 
-            foreach (var elemento in elementos) elemento.Value.draw(program, rtransform, position);
+            foreach (var elemento in elementos) elemento.Value.draw(program, rtransform, 
+                ComponentUtils.sumarPuntos(relativeOrigin, this.position));
         }
 
         public void dispose() {

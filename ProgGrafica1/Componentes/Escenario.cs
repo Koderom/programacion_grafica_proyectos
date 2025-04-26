@@ -11,11 +11,13 @@ namespace ProgGrafica1.Elements
 {
     public class Escenario
     {
+        public Punto position { get; set; }
         public Transform transform { get; set; } = new Transform();
         public Dictionary<String,Objeto> objetos { get; set; } = new Dictionary<String, Objeto>();
 
-        public Escenario(Dictionary<String, Objeto> objetos = null) 
+        public Escenario(Punto position = null, Dictionary<String, Objeto> objetos = null) 
         {
+            this.position = position ?? new Punto();
             this.objetos = objetos?? new Dictionary<String, Objeto>();
 
             this.transform = new Transform();
@@ -28,7 +30,7 @@ namespace ProgGrafica1.Elements
 
         public void draw(int program) 
         {
-            foreach( var objeto in objetos) objeto.Value.draw(program, this.transform);
+            foreach( var objeto in objetos) objeto.Value.draw(program, this.transform, position);
             
         }
 
