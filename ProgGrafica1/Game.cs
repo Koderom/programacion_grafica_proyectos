@@ -69,6 +69,8 @@ namespace ProgGrafica1
         protected override void OnUpdateFrame(FrameEventArgs args)
         {
             base.OnUpdateFrame(args);
+            if (!KeyboardState.IsAnyKeyDown) return;
+
             if (KeyboardState.IsKeyDown(Keys.Escape)) Close();
 
             mTransform = getSelectedTransform();
@@ -111,7 +113,7 @@ namespace ProgGrafica1
             }
 
             //ROTACION
-            float degreess = MathHelper.DegreesToRadians(0.1f);
+            float degreess = MathHelper.DegreesToRadians(0.3f);
             if (KeyboardState.IsKeyDown(Keys.X))
             {
                 Matrix4 rotacion = Matrix4.CreateRotationX(degreess);

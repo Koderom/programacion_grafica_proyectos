@@ -1,4 +1,5 @@
 ﻿using OpenTK.Mathematics;
+using ProgGrafica1.Elements;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +14,16 @@ namespace ProgGrafica1.utils
         public Vector3 Scale = Vector3.One;
         public Matrix4 Rotation = Matrix4.Identity;
 
-        public Matrix4 GetModelMatrix()
+        public Matrix4 GetModelMatrix(Punto punto)
         {
-            return Matrix4.CreateTranslation(Position) * Rotation * Matrix4.CreateScale(Scale);
+            Matrix4 model = Matrix4.Identity;
+            model *= Matrix4.CreateTranslation(-punto.x, -punto.y, -punto.z);
+            model *= Rotation;
+            model *= Matrix4.CreateTranslation(punto.x, punto.y, punto.z);
+            model *= Matrix4.CreateTranslation(Position);
+            model *= Matrix4.CreateScale(Scale);
+
+            return model;
         }
 
         public static Transform combinarTransformacion(Transform a, Transform b){

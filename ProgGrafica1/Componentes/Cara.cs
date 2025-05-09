@@ -44,7 +44,7 @@ namespace ProgGrafica1.Elements
         {
             Transform rtransform = Transform.combinarTransformacion(transform, this.transform);
             GL.BindVertexArray(VAO);
-            drawTransform(program, rtransform);
+            
             if (!isBinding)
             {
                 List<Punto> fixedVertices = ComponentUtils.fixToAbsoluteOrigin(origen, vertices);
@@ -63,15 +63,15 @@ namespace ProgGrafica1.Elements
                 GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
                 GL.BindBuffer(BufferTarget.ElementArrayBuffer, EBO);
             }
-
+            drawTransform(program, rtransform, origen);
             GL.DrawElements(PrimitiveType.Triangles, indices.Count, DrawElementsType.UnsignedInt, 0);
             GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
 
             GL.EnableVertexAttribArray(0);
             GL.BindVertexArray(0);
         }
-        private void drawTransform(int program, Transform transform) {
-            Matrix4 mTranform = transform.GetModelMatrix();
+        private void drawTransform(int program, Transform transform, Punto punto) {
+            Matrix4 mTranform = transform.GetModelMatrix(punto);
             
             int location = GL.GetUniformLocation(program, "transform");
             if (location != -1)
