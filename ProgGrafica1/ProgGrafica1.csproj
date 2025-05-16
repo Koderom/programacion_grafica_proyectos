@@ -10,12 +10,20 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="assets\escena.json" />
+    <None Remove="assets\guion.json" />
     <None Remove="escenario.json" />
     <None Remove="shader.frag" />
     <None Remove="shader.vert" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="assets\escena.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="assets\guion.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="shader.frag">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

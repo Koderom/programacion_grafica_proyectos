@@ -12,6 +12,8 @@ using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
+using ProgGrafica1.ejecutor;
+using ProgGrafica1.ejecutor.libreto;
 using ProgGrafica1.Elements;
 using ProgGrafica1.utils;
 
@@ -38,9 +40,45 @@ namespace ProgGrafica1
             escenario = ComponentUtils.loadData<Escenario>("./assets/escenario.json");
             //ComponentUtils.saveData("./assets/escenario.json", this.escenario);
 
-            shader = new Shader("./shader.vert", "./shader.frag");
+            //Escena escena = new Escena(accionQueue: new Queue<Accion> (
+            //    new Accion[]{
+            //        new Accion( idObjeto:"Objeto1", isLoop: true),
+            //        new Accion( idObjeto:"Objeto1", isLoop: true),
+            //        new Accion( idObjeto:"Objeto1", isLoop: true),
+            //        new Accion( idObjeto:"Objeto1", isLoop: true),
+            //    } 
+            //));
 
+            //Guion guion = new Guion(
+            //    escenas: new Queue<Escena>(new Escena[]{
+            //        new Escena(
+            //            acciones: new Queue<Accion>(
+            //                new Accion[]{
+            //                new Accion( transformacion: new List<Transformacion>{
+            //                    new Transformacion(
+            //                        rotacion: new float[]{ 0,0,0},
+            //                        traslacion: new float[]{ 0,0,0},
+            //                        escala: 1,
+            //                        tInicio: 1,
+            //                        duracion: 5
+            //                    )
+            //                })
+            //            }),
+            //            objeto: "objeto1"
+            //        )
+            //    }
+            //));
+
+            //ComponentUtils.saveData("./assets/guion.json", guion);
+
+
+
+            shader = new Shader("./shader.vert", "./shader.frag");
             Program = shader.Use();
+
+            Ejecutor ejecutor = new Ejecutor(escenario);
+            ejecutor.play();
+
             _controller = new ImGuiController(ClientSize.X, ClientSize.Y);
         }
 
@@ -56,19 +94,24 @@ namespace ProgGrafica1
         {
             base.OnRenderFrame(args);
             GL.Clear(ClearBufferMask.ColorBufferBit);
-            escenario.draw(Program);
 
+            lock (escenario) {
+                escenario.draw(Program);
+            }
 
             _controller.Update(this, (float)args.Time);
             loadPanel();
             _controller.Render();
-
 
             SwapBuffers();
         }
         protected override void OnUpdateFrame(FrameEventArgs args)
         {
             base.OnUpdateFrame(args);
+
+            Cronometro cronometro = Cronometro.getInstance();
+            cronometro.setParams(args.Time, 1);
+
             if (!KeyboardState.IsAnyKeyDown) return;
 
             if (KeyboardState.IsKeyDown(Keys.Escape)) Close();

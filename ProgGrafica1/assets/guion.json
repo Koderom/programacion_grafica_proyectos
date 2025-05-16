@@ -1,0 +1,149 @@
+{
+  "escenas": [
+    {
+      "acciones": [
+        {
+          "isLoop": false,
+          "objeto": null,
+          "transformaciones": [
+            {
+              "tInicio": 1,
+              "tFinal": 3,
+              "rotacion": [
+                0,
+                0,
+                0
+              ],
+              "traslacion": [
+                0.3,
+                0,
+                0
+              ],
+              "escala": 1
+            },
+            {
+              "tInicio": 3,
+              "tFinal": 5,
+              "rotacion": [
+                0,
+                0,
+                0
+              ],
+              "traslacion": [
+                0,
+                -0.3,
+                0
+              ],
+              "escala": 1
+            },
+            {
+              "tInicio": 5,
+              "tFinal": 7,
+              "rotacion": [
+                0,
+                0,
+                0
+              ],
+              "traslacion": [
+                -0.3,
+                0,
+                0
+              ],
+              "escala": 1
+            },
+            {
+              "tInicio": 7,
+              "tFinal": 9,
+              "rotacion": [
+                0,
+                0,
+                0
+              ],
+              "traslacion": [
+                0,
+                0.3,
+                0
+              ],
+              "escala": 1
+            }
+          ],
+          "indexTransformacion": 0
+        }
+      ],
+      "objeto": "objeto1"
+    },
+    {
+      "acciones": [
+        {
+          "isLoop": false,
+          "objeto": null,
+          "transformaciones": [
+            {
+              "tInicio": 1,
+              "tFinal": 3,
+              "rotacion": [
+                0,
+                0,
+                0
+              ],
+              "traslacion": [
+                0.3,
+                -0.3,
+                0
+              ],
+              "escala": 1
+            },
+            {
+              "tInicio": 3,
+              "tFinal": 5,
+              "rotacion": [
+                0,
+                0,
+                0
+              ],
+              "traslacion": [
+                -0.3,
+                -0.3,
+                0
+              ],
+              "escala": 1
+            },
+            {
+              "tInicio": 5,
+              "tFinal": 7,
+              "rotacion": [
+                0,
+                0,
+                0
+              ],
+              "traslacion": [
+                -0.3,
+                0.3,
+                0
+              ],
+              "escala": 1
+            },
+            {
+              "tInicio": 7,
+              "tFinal": 9,
+              "rotacion": [
+                0,
+                0,
+                0
+              ],
+              "traslacion": [
+                0.3,
+                0.3,
+                0
+              ],
+              "escala": 1
+            }
+          ],
+          "indexTransformacion": 0
+        }
+      ],
+      "objeto": "objeto2"
+    }
+
+  ]
+}
