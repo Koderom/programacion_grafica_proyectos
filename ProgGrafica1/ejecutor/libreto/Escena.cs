@@ -18,10 +18,20 @@ namespace ProgGrafica1.ejecutor.libreto
             this.objeto = objeto;
         }
 
-        public void playNext() {
-            foreach (Accion acc in acciones) { 
-                acc.play(); 
-            }                      
+        public void play() {
+            foreach (Accion accion in acciones) {
+                accion.play(); 
+            }
+            //limpiarAcciones();
+        }
+        private void limpiarAcciones() {
+            for (int i = 0; i < acciones.Count; i++) { 
+                Accion accion = acciones.Dequeue();
+                if (!accion.isAccionFinalizada())
+                    acciones.Enqueue(accion);
+                else if (accion.isLoop)
+                    acciones.Enqueue(accion.getAccionLoop());
+            }
         }
         public void cargarAccion(Escenario escenario) {
             if (objeto == null) return;

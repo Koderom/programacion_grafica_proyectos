@@ -17,9 +17,9 @@ namespace ProgGrafica1.utils
         public Matrix4 GetModelMatrix(Punto punto)
         {
             Matrix4 model = Matrix4.Identity;
-            model *= Matrix4.CreateTranslation(-punto.x, -punto.y, -punto.z);
+            //model *= Matrix4.CreateTranslation(-punto.x, -punto.y, -punto.z);
             model *= Rotation;
-            model *= Matrix4.CreateTranslation(punto.x, punto.y, punto.z);
+            //model *= Matrix4.CreateTranslation(punto.x, punto.y, punto.z);
             model *= Matrix4.CreateTranslation(Position);
             model *= Matrix4.CreateScale(Scale);
 

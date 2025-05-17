@@ -16,7 +16,7 @@ namespace ProgGrafica1.ejecutor.libreto
         }
         public void play() {
             foreach (var item in escenas)
-                item.playNext();
+                item.play();
         }
         public void cargarEscenas(Escenario escenario){
             foreach (var item in escenas)

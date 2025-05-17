@@ -30,7 +30,6 @@ namespace ProgGrafica1.ejecutor
         }
 
         private void run() {
-            //TODO: agregar control de acceso
             while (true) {
                 lock (escenario) {
                     guion.play();

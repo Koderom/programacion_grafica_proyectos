@@ -14,28 +14,48 @@ namespace ProgGrafica1.ejecutor.libreto
         public Boolean isLoop {  get; set; }
         public Objeto objeto { get; set; }
         public List<Transformacion> transformaciones { get; set; }
-        public int indexTransformacion { get; set; }
-        public Accion(List<Transformacion> transformaciones = null, Objeto objeto = null, bool isLoop = false, int indexTransformacion = 0)
+
+        private List<Transformacion> modelTransformaciones;
+        public Accion(List<Transformacion> transformaciones = null, Objeto objeto = null, bool isLoop = false)
         {
             this.transformaciones = transformaciones ?? new List<Transformacion>();
             this.objeto = objeto;
             this.isLoop = isLoop;
 
-            this.indexTransformacion = indexTransformacion;
+            this.modelTransformaciones = getCloneTransformaciones(this.transformaciones);
         }
 
         public void play() {
-            if(indexTransformacion >= transformaciones.Count) indexTransformacion = 0;
-
-            if (objeto != null && transformaciones.Count > indexTransformacion) {
-                Transformacion transformacion = transformaciones[indexTransformacion];
-                transformacion.aplicar(objeto);
-
-                indexTransformacion++;
-                //if (transformacion.isAplicada()) indexTransformacion++;
+            foreach (Transformacion transform in transformaciones) {
+                transform.aplicar(objeto);
             }
         }
 
-        
+        public Boolean isAccionFinalizada() {
+            foreach (Transformacion transform in transformaciones)
+                if(transform.isAplicada() == false) return false;
+            
+            return true;
+        }
+
+        public Accion getAccionLoop() {
+            List<Transformacion> model = getCloneTransformaciones(modelTransformaciones);
+            double tbase = Cronometro.getInstance().getTime();
+            foreach (Transformacion item in model)
+            {
+                double duracion = item.tFinal - item.tInicio;
+                item.tInicio = item.tFinal;
+                item.tFinal = item.tFinal + duracion;
+            }
+
+            return new Accion(transformaciones: model, objeto: objeto, isLoop: isLoop);
+        }
+        private List<Transformacion> getCloneTransformaciones(List<Transformacion> transformaciones) {
+            List<Transformacion> model = new List<Transformacion> ();
+            foreach (Transformacion transformacion in transformaciones) { 
+                model.Add((Transformacion) transformacion.Clone());
+            }
+            return model;
+        }
     }
 }

@@ -42,12 +42,22 @@ namespace ProgGrafica1.ejecutor.libreto
                 double tFrames = fps * (tFinal - tInicio);
                 Transformacion cTransformacion = (Transformacion) this.Clone();
 
-                //Logica para aplicar la transformacion
-                if (cTransformacion.traslacion[0] != 0) cTransformacion.traslacion[0] *= (float)(1 / tFrames);
-                if (cTransformacion.traslacion[1] != 0) cTransformacion.traslacion[1] *= (float)(1 / tFrames);
-                if (cTransformacion.traslacion[2] != 0) cTransformacion.traslacion[2] *= (float)(1 / tFrames);
+                //Logica para aplicar la traslacion
+                if (cTransformacion.traslacion[0] != 0) cTransformacion.traslacion[0] *= (float)(deltaFrames / tFrames);
+                if (cTransformacion.traslacion[1] != 0) cTransformacion.traslacion[1] *= (float)(deltaFrames / tFrames);
+                if (cTransformacion.traslacion[2] != 0) cTransformacion.traslacion[2] *= (float)(deltaFrames / tFrames);
 
+                //Logica para aplicar la rotacion
+                if (cTransformacion.rotacion[0] != 0) cTransformacion.rotacion[0] *= (float)(deltaFrames / tFrames);
+                if (cTransformacion.rotacion[1] != 0) cTransformacion.rotacion[1] *= (float)(deltaFrames / tFrames);
+                if (cTransformacion.rotacion[2] != 0) cTransformacion.rotacion[2] *= (float)(deltaFrames / tFrames);
 
+                //Logica para aplicar escala
+                double escalaAplicable = Math.Abs(1 - cTransformacion.escala);
+                if (escalaAplicable > 0) {
+                    cTransformacion.escala = (float)Math.Pow(cTransformacion.escala, 1 / tFrames);
+                    this.escala = (float)Math.Pow(cTransformacion.escala, tFrames - 1);
+                }
 
                 objeto.transform = Transform.combinarTransformacion(
                     objeto.transform, cTransformacion.getModelTransform());
@@ -55,6 +65,10 @@ namespace ProgGrafica1.ejecutor.libreto
                 this.traslacion[0] += cTransformacion.traslacion[0] * -1;
                 this.traslacion[1] += cTransformacion.traslacion[1] * -1;
                 this.traslacion[2] += cTransformacion.traslacion[2] * -1;
+
+                this.rotacion[0] += cTransformacion.rotacion[0] * -1;
+                this.rotacion[1] += cTransformacion.rotacion[1] * -1;
+                this.rotacion[2] += cTransformacion.rotacion[2] * -1;
 
                 this.tInicio = cronometro.getTime();
                 this.frames = cronometro.getFrames();
@@ -119,7 +133,9 @@ namespace ProgGrafica1.ejecutor.libreto
 
             Boolean isEscalaAplicada = this.escala == 1.0;
 
-            return isTraslacionAplicada && isRotacionAplicada && isEscalaAplicada;
+            Boolean isTiempoTerminado = tFinal < tInicio;
+
+            return (isTraslacionAplicada && isRotacionAplicada && isEscalaAplicada) || isTiempoTerminado;
         }
 
         public object Clone()
